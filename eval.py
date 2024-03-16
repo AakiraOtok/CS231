@@ -4,10 +4,10 @@ from model.SSD512 import SSD512
 from model.FPN_SSD300_b import FPN_SSD300
 from utils.VOC_utils import VOCUtils
 #from utils.COCO_utils import COCOUtils
-from utils.SOHAS_utils import SOHAS_dataset
-from utils.VEDAI_utils import VEDAI_Utils
+from utils.Traffic_utils import TrafficUtils
 from utils.box_utils import Non_Maximum_Suppression, jaccard
 from utils.augmentations_utils import CustomAugmentation
+from tqdm import tqdm
 
 def voc_ap(rec, prec, use_07_metric=True):
     """ ap = voc_ap(rec, prec, [use_07_metric])
@@ -187,57 +187,26 @@ def eval_on_VOC(pretrain_path, version="original", size=300):
 
     return dataset, model
 
-def eval_on_COCO(pretrain_path, version="original", size=300):
-    dataset = COCOUtils(r"H:\data\COCO\val2014", r"H:\data\COCO\instances_minival2014.json").make_dataset(phase="valid", transform=CustomAugmentation(size=size))
+def eval_on_Traffic(pretrain_path, version="original", size=300):
+    root_path = "/home/manh/Datasets/Vietnam-Traffic-Sign-Detection.v6i.voc"
+    test_path = 'test'
 
+    data = TrafficUtils()
+    dataset       = data.make_dataset(root_path=root_path, split_folder_path=test_path, transform=CustomAugmentation(phase='valid'), phase='valid')
     if version == "original":
-        if size==300:
-            model = SSD300(pretrain_path, data_train_on="COCO", n_classes=81)
-        elif size==512:
-            model = SSD512(pretrain_path, data_train_on="COCO", n_classes=81)
+        model = SSD300(pretrain_path, n_classes=57)
     elif version == "FPN":
-        if size == 300:
-            model = FPN_SSD300(pretrain_path=pretrain_path, data_train_on="COCO", n_classes=81)
+        model = FPN_SSD300(pretrain_path=pretrain_path, n_classes=57)
     
     return dataset, model
-
-def eval_on_SOHAS(pretrain_path, version="original", size=300):
-    data_folder_path = r"H:\data"
-    dataset = SOHAS_dataset(data_folder_path, r'test', CustomAugmentation(size=size), phase='valid')
-    if version == "original":
-        if size==300:
-            model = SSD300(pretrain_path, n_classes=7)
-        elif size==512:
-            model = SSD512(pretrain_path, n_classes=7)
-    elif version == "FPN":
-        if size == 300:
-            model = FPN_SSD300(pretrain_path=pretrain_path, n_classes=7)
-    
-    return dataset, model
-
-def eval_on_VEDAI(pretrain_path, foldfile,version="original", size=300):
-    data_folder_path = r"E:\data"
-    dataset = VEDAI_Utils(data_folder_path).make_dataset(r"{}test.txt".format(foldfile), transform=CustomAugmentation(phase='valid'), phase='valid')
-    if version == "original":
-        if size==300:
-            model = SSD300(pretrain_path, "COCO",n_classes=12)
-        elif size==512:
-            model = SSD512(pretrain_path, "COCO",n_classes=12)
-    elif version == "FPN":
-        if size == 300:
-            model = FPN_SSD300(pretrain_path=pretrain_path, data_train_on="COCO",n_classes=12)
-    
-    return dataset, model
-
-fold_list = ["fold01", "fold02", "fold03", "fold04", "fold05", "fold06", "fold07", "fold08", "fold09", "fold10"]
 
 if __name__ == "__main__":
 
-    pretrain_path = r"E:\checkpoint\{}_{}.pth"
+    pretrain_path = "/home/manh/checkpoint/iteration_45000.pth"
     size          = 300
-    num_classes   = 7 
+    num_classes   = 57
 
-    dataset, model = eval_on_SOHAS(pretrain_path=pretrain_path, version="FPN", size=size)
+    dataset, model = eval_on_Traffic(pretrain_path=pretrain_path, version="FPN", size=size)
 
     model.eval()
 

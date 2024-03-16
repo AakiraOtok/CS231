@@ -270,7 +270,10 @@ def resize(image, boxes, dims=(300, 300), return_percent_coords=True):
     # Resize bounding boxes
     old_dims = torch.FloatTensor([image.width, image.height, image.width, image.height]).unsqueeze(0)
     
-    new_boxes = boxes / old_dims  # percent coordinates
+    if boxes.shape[0] > 0:
+        new_boxes = boxes / old_dims  # percent coordinates
+    else:
+        new_boxes = boxes
 
     if not return_percent_coords:
         new_dims = torch.FloatTensor([dims[1], dims[0], dims[1], dims[0]]).unsqueeze(0)

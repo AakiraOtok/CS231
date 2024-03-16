@@ -1,5 +1,5 @@
 from utils.lib import *
-from utils.augmentations_utils import CustomAugmentation
+from utils.live_aug_utils import CustomAugmentation 
 
 from math import sqrt
 
@@ -103,6 +103,8 @@ def read_ann(ann_path):
     for obj in root.iter('object'):
         # Tên của obj trong box
         name = obj.find('name').text.lower().strip()
+        if name not in Traffic_name2idx.keys():
+            continue
         labels.append(name)
 
         # Độ khó 
