@@ -1,0 +1,75 @@
+#import matplotlib.pyplot as plt
+#import numpy as np
+
+#species = ('aero', 'bike', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', 'table', 'dog', 'horse',
+           #'mbike', 'person', 'plant', 'sheep', 'sofa', 'train', 'tv')
+#penguin_means = {
+    #'original SSD300': (81.10, 84.81, 77.57, 70.63, 45.81, 85.32, 85.69, 89.05, 58.60, 81.52,
+                        #76.92, 86.80, 87.50, 84.70, 78.51, 51.90, 77.15, 78.51, 85.84, 76.00),
+    #'SSD300 EMB': (83.6, 85.5, 75.9, 71.9, 54.2, 87.4, 86.8, 87.2, 62.8, 82.8,
+                   #78.8, 85.4, 86.4, 85.8, 80.2, 51.5, 76.9, 81.9, 85.7, 77.3),
+    #'Lite FPN SSD300': (81.97, 84.01, 77.10, 71.76, 52.37, 86.57, 87.02, 88.37, 59.71, 87.35,
+                        #75.35, 88.08, 88.49, 85.24, 78.94, 52.49, 80.23, 78.57, 85.19, 78.30),
+#}
+
+#x = np.arange(len(species))  # the label locations
+#width = 0.25  # the width of the bars
+#multiplier = 0
+
+#fig, ax = plt.subplots(figsize=(10, 6))  # Increase the figure size
+
+#colors = ['#FFD700', '#1f77b4', '#ff7f0e']
+
+#for i, (attribute, measurement) in enumerate(penguin_means.items()):
+    #offset = width * multiplier
+    #rects = ax.bar(x + offset, measurement, width, label=attribute, color=colors[i])
+    ##ax.bar_label(rects, padding=3, fontsize=8, color='black', fmt='%.2f', weight='bold', labels=["", "", ""])
+    ##ax.bar_label(rects, labels=["", "", ""])
+
+    #multiplier += 1
+
+## Add some text for labels, title and custom x-axis tick labels, etc.
+#ax.set_ylabel('mAP')
+#ax.set_title('Performance on VOC')
+#ax.set_xticks(x + width * 1.5)
+#ax.set_xticklabels(species, rotation=45, ha='right', fontsize=8)
+
+## Move the legend below the chart
+#ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), ncol=3)
+#ax.set_ylim(0, 100)
+
+#plt.tight_layout()
+
+#plt.savefig(r'H:\project_WPD\fig\VOC_mAP', dpi=1000)
+
+#import matplotlib.pyplot as plt
+
+#models = ['a', 'b', 'c']
+#params = [26.3, 30.6, 28.3]
+#mAP_scores = [77.2, 78.4, 78.36]
+
+#plt.scatter(params, mAP_scores, color='b', label='Original SSD300')
+
+#plt.scatter(params[models.index('c')], mAP_scores[models.index('c')], color='r', label='Lite FPN SSD300')
+#plt.scatter(params[models.index('b')], mAP_scores[models.index('b')], color='g', label='EMB SSD300')
+
+#for i, model in enumerate(models):
+    #plt.annotate(f'{mAP_scores[i]}', (params[i], mAP_scores[i]), textcoords="offset points", xytext=(0,10), ha='center')
+
+#plt.title('Number of parameters and mAP')
+#plt.xlabel('Number of parameters (Mililon)')
+#plt.ylabel('mAP')
+#plt.legend()
+#plt.ylim(77, 79)  
+
+##plt.show()
+
+#plt.savefig(r'H:\project_WPD\fig\parameters', dpi=1000)
+
+a = [23, 23, 2, 1]
+t = 0
+for i in a:
+    t += i
+
+t /= len(a)
+print(t)
