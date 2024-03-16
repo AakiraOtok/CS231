@@ -120,7 +120,7 @@ def read_ann(ann_path):
 
 class TrafficSign_dataset(data.Dataset):
 
-    def __init__(self, root_path, split_folder_path, transform=None, phase='train'):
+    def __init__(self, root_path, split_folder_path, transform=None, phase='train', flag = False):
         super().__init__()
         
         path = os.path.join(root_path, split_folder_path)
@@ -135,7 +135,7 @@ class TrafficSign_dataset(data.Dataset):
 
         for ann_file in ann_temp:
             _1, labels, _2 = read_ann(ann_file)
-            if len(labels) == 0:
+            if (len(labels) == 0) and (flag == True):
                 continue
 
             self.ann_path_list.append(ann_file)
@@ -173,8 +173,9 @@ class TrafficSign_dataset(data.Dataset):
         
 class TrafficUtils():
 
-    def make_dataset(self, root_path, split_folder_path, transform, phase):
-        return TrafficSign_dataset(root_path=root_path, split_folder_path=split_folder_path, transform=transform, phase=phase)
+    def make_dataset(self, root_path, split_folder_path, transform, phase, flag=False):
+        dataset = TrafficSign_dataset(root_path=root_path, split_folder_path=split_folder_path, transform=transform, phase=phase, flag=flag)
+        return dataset
 
     def make_dataloader(self, root_path, split_folder_path, batch_size, shuffle, transform=CustomAugmentation(), collate_fn=collate_fn, phase='train', num_worker=0, pin_memory=False):
         dataset = self.make_dataset(root_path=root_path, split_folder_path=split_folder_path, transform=transform, phase=phase)
