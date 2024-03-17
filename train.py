@@ -57,7 +57,7 @@ def train_on_Traffic(size=300, version="original", pretrain_path=None):
 
     data = TrafficUtils()
     dataloader       = data.make_dataloader(root_path=root_path, split_folder_path=train_path, batch_size=32
-                                            ,shuffle = True, num_worker=6, pin_memory=True)
+                                            ,shuffle = True, num_worker=6, pin_memory=True, flag=True)
 
     if version == "original":
         model = SSD300(n_classes=57, pretrain_path=pretrain_path)
@@ -87,7 +87,7 @@ if __name__ == "__main__":
 
     #pretrain_path = r"H:\checkpoint\iteration_120000_b_78.29.pth"
     pretrain_path = None
-    dataloader, model, criterion = train_on_Traffic(version="FPN", size=300, pretrain_path=pretrain_path)
+    dataloader, model, criterion = train_on_Traffic(version="original", size=300, pretrain_path=pretrain_path)
     biases     = []
     not_biases = []
     for param_name, param in model.named_parameters():

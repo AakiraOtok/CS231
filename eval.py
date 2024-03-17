@@ -206,7 +206,7 @@ if __name__ == "__main__":
     size          = 300
     num_classes   = 57
 
-    dataset, model = eval_on_Traffic(pretrain_path=pretrain_path, version="FPN", size=size)
+    dataset, model = eval_on_Traffic(pretrain_path=pretrain_path, version="original", size=size)
 
     model.eval()
 

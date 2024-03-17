@@ -1,5 +1,5 @@
 from utils.lib import *
-from utils.live_aug_utils import CustomAugmentation 
+from utils.augmentations_utils import CustomAugmentation 
 
 from math import sqrt
 
@@ -179,8 +179,8 @@ class TrafficUtils():
         dataset = TrafficSign_dataset(root_path=root_path, split_folder_path=split_folder_path, transform=transform, phase=phase, flag=flag)
         return dataset
 
-    def make_dataloader(self, root_path, split_folder_path, batch_size, shuffle, transform=CustomAugmentation(), collate_fn=collate_fn, phase='train', num_worker=0, pin_memory=False):
-        dataset = self.make_dataset(root_path=root_path, split_folder_path=split_folder_path, transform=transform, phase=phase)
+    def make_dataloader(self, root_path, split_folder_path, batch_size, shuffle, transform=CustomAugmentation(), collate_fn=collate_fn, phase='train', num_worker=0, pin_memory=False,  flag=False):
+        dataset = self.make_dataset(root_path=root_path, split_folder_path=split_folder_path, transform=transform, phase=phase, flag = flag)
         dataloader = data.DataLoader(dataset, batch_size, shuffle, num_workers=num_worker, collate_fn=collate_fn, pin_memory=pin_memory)
         return dataloader
 
