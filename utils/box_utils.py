@@ -51,7 +51,8 @@ def draw_bounding_box(image, bboxes, labels, confs, map_labels):
             box[1] = max(0, int(box[1]*H))
             box[2] = min(W, int(box[2]*W))
             box[3] = min(H, int(box[3]*H))
-            text    = str(map_labels[label.item()] + " : " + str(round(conf.item()*100, 2)))
+            #text    = str(map_labels[label.item()] + " : " + str(round(conf.item()*100, 2)))
+            text    = ""
             box_label(image, box, text)
         
 

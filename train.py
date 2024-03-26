@@ -60,11 +60,11 @@ def train_on_Traffic(size=300, version="original", pretrain_path=None):
                                             ,shuffle = True, num_worker=6, pin_memory=True, flag=True)
 
     if version == "original":
-        model = SSD300(n_classes=57, pretrain_path=pretrain_path)
+        model = SSD300(n_classes=2, pretrain_path=pretrain_path)
     elif version == "FPN":
         model = FPN_SSD300(n_classes=57, pretrain_path=pretrain_path)
 
-    criterion  = MultiBoxLoss(num_classes=57)
+    criterion  = MultiBoxLoss(num_classes=2)
 
     return dataloader, model, criterion
 

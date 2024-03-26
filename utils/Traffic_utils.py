@@ -156,7 +156,8 @@ class TrafficSign_dataset(data.Dataset):
         bboxes, labels, difficulties = read_ann(self.ann_path_list[index])
         temp = []
         for label in labels:
-            temp.append(Traffic_name2idx[label])
+            #temp.append(Traffic_name2idx[label])
+            temp.append(1)
         bboxes       = np.array(bboxes)
         labels       = np.array(temp)
         difficulties = np.array(difficulties)
