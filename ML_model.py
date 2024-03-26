@@ -23,6 +23,9 @@ import sys
 import glob
 
 from math import sqrt
+import sklearn.svm as svm
+import pickle
+from sklearn.metrics import f1_score
 
 Traffic_name2idx = {
     "w.245a" : 1,
@@ -216,14 +219,14 @@ def featuring(img, bboxes):
             ymax = min(H, int(box[3]*H))
 
             sub_img = img[ymin : ymax, xmin : xmax, :].copy()
-            sub_img = cv2.resize(sub_img, (100, 100))
+            sub_img = cv2.resize(sub_img, (50, 50))
 
             feature = calFeatureVector(sub_img)
             features.append(feature)
 
+    features = np.array(features)
     return features
 
-from sklearn.metrics import f1_score
 def eval(classifier):
     root_path = r'/home/manh/Datasets/Vietnam-Traffic-Sign-Detection.v6i.voc'
     test_path = 'test'
@@ -257,33 +260,82 @@ def eval(classifier):
     y_pred = classifier.predict(test_features)
     print(f1_score(test_labels, y_pred, average=None))
 
+def create_ML_model():
+    train_features, train_labels = create_train_set()
+    print(train_features.shape)
+    print(train_labels.shape)
 
-import sklearn.svm as svm
-import pickle
-if __name__ == "__main__":
+    print()
+    print("processing...")
+    print()
 
-    #train_features, train_labels = create_train_set()
-    #print(train_features.shape)
-    #print(train_labels.shape)
-
-    #print()
-    #print("processing...")
-    #print()
-
-    #classifier = svm.SVC()
-    #classifier.fit(train_features, train_labels)
-
-    #print("train done")
-
-    #with open('model.pkl', 'wb') as f:
-        #pickle.dump(classifier, f)
-
-    #print("save done")
-    
     classifier = svm.SVC()
-    with open('model.pkl', 'rb') as f:
+    classifier.fit(train_features, train_labels)
+
+    print("train done")
+
+    with open('model.pkl', 'wb') as f:
+        pickle.dump(classifier, f)
+
+    print("save done")
+
+def ML_model(pretrain_path = '/home/manh/Projects/CS231/weights/model.pkl'):
+    if pretrain_path == None:
+        return create_ML_model()
+
+    classifier = svm.SVC()
+    with open(pretrain_path, 'rb') as f:
         classifier = pickle.load(f)
 
-    eval(classifier)
+    return classifier
+
+from utils.box_utils import draw_bounding_box, Non_Maximum_Suppression
+from model.SSD300 import SSD300
+def detect(num_classes=2, mapping=Traffic_idx2name):
+
+    root_path = r'/home/manh/Datasets/Vietnam-Traffic-Sign-Detection.v6i.voc'
+    test_path = 'test'
+    dataset = TrafficSignSVM_dataset(root_path, test_path)
+
+    model = SSD300(pretrain_path='/home/manh/Projects/CS231/weights/ML_model_8.pth', n_classes=2)
+    model.to("cuda")
+    dboxes = model.create_prior_boxes().to("cuda")
+    classifier = ML_model()
+
+    for idx in range(dataset.__len__()):
+        image, bboxes, labels = dataset.__getitem__(idx)
+        origin_image = image.copy()
+        
+        image        = cv2.resize(image, (300, 300))
+        image        = torch.FloatTensor(image[:, :, (2, 1, 0)]).permute(2, 0, 1).contiguous()
+        image = image.unsqueeze(0).to("cuda")
+        offset, conf = model(image)
+        offset = offset.to("cuda")
+        conf   = conf.to("cuda")
+        pred_bboxes, pred_labels, pred_confs = Non_Maximum_Suppression(dboxes, offset[0], conf[0], conf_threshold=0.3, iou_threshold=0.45, top_k=200, num_classes=num_classes)
+        feature = featuring(origin_image, pred_bboxes)
+        if feature.shape[0] == 0:
+            continue
+
+        y_pred = classifier.predict(feature)
+        y_pred = np.array(y_pred)
+        y_pred = torch.tensor(y_pred) + 1
+  
+        draw_bounding_box(origin_image, pred_bboxes, y_pred, pred_labels, mapping)
+        cv2.imshow("img", origin_image)
+        k = cv2.waitKey()
+        if (k == ord('q')):
+            break
+        #cv2.imwrite(r"H:\test_img\_" + str(idx) + r".jpg", origin_image)
+        print("ok")
+
+
+if __name__ == "__main__":
+    
+    #classifier = ML_model(pretrain_path='weights/model.pkl')
+    #eval(classifier)
+    detect()
+
+
 
 

@@ -6,7 +6,7 @@ from model.FPN_SSD512 import FPN_SSD512
 from utils.Traffic_utils import TrafficUtils, Traffic_idx2name
 from utils.box_utils import Non_Maximum_Suppression, draw_bounding_box
 from utils.augmentations_utils import CustomAugmentation
-from lab2 import featuring
+from ML_model import featuring
 
 def detect(dataset, model, num_classes=21, mapping=Traffic_idx2name):
     model.to("cuda")
